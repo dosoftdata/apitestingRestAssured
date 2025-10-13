@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "transactionId": "{{request.pathSegments.[2]}}",
+  "amount": "100.00",
+  "currency": "EUR",
+  "timestamp": "{{now format='yyyy-MM-dd HH:mm:ss'}}",
+}
