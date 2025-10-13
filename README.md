@@ -1,7 +1,7 @@
 # API Testing Framework
 
 **Version:** 1.0  
-**Author:** OPAP Middleware Team  
+**Author:**Team  
 **Language:** Java  
 **Build Tool:** Maven  
 
@@ -60,7 +60,7 @@ This framework provides a modular foundation for:
 ApiTesting/
 ├── pom.xml
 ├── src/
-│   ├── main/java/opap/middleware/
+│   ├── main/java/com/apitesting/
 │   │   ├── core/
 │   │   ├── config/
 │   │   ├── dsl/
@@ -68,7 +68,7 @@ ApiTesting/
 │   │   └── utilities/
 │   ├── main/resources/
 │   │   └── log4j2.xml
-│   ├── test/java/opap/middleware/
+│   ├── test/java/com/apitesting/
 │   │   ├── hooks/
 │   │   ├── runners/
 │   │   └── steps/
@@ -236,10 +236,10 @@ Integrate Allure publishing as a post-build step for visibility in your pipeline
 ## 15. Contact & Support
 
 For framework-related queries or requests:
-- **Email:** middleware-support@yourcompany.com  
+- **Email:**support@yourcompany.com  
 - **Team:** QA Automation / Middleware Services  
 - **Location:** Athens HQ  
 
 ---
 
-© 2025 OPAP Middleware Automation Framework. All rights reserved.
+© 2025 Automation Framework. All rights reserved.
