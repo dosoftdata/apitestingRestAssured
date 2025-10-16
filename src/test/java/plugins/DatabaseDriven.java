@@ -39,7 +39,6 @@ public class DatabaseDriven implements ConcurrentEventListener {
           String scenarioName = extractScenarioName(line);
           List<Map<String, String>> examples = dbExamples.getOrDefault(scenarioName, Collections.emptyList());
           if (examples.isEmpty()) continue;
-
           if (line.startsWith("Scenario Outline")) {
             // Replace original Examples with DB Examples
             int examplesStart = findExamplesStart(lines, i);
