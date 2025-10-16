@@ -48,8 +48,7 @@ public class ConfigLoader {
     } else {
       // Java 15+ → use external nashorn-core
       return new NashornScriptEngineFactory()
-              .getScriptEngine("--language=es6", "--no-deprecation-warning",
-                      "--strict=false", "--allow-all-access");
+              .getScriptEngine("--language=es6");
     }
   }
 }

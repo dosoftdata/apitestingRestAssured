@@ -8,8 +8,8 @@
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>13</maven.compiler.source>
-        <maven.compiler.target>13</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <cucumber.version>7.3.4</cucumber.version>
         <surefire.plugin.version>3.5.3</surefire.plugin.version>
         <restassured.version>5.5.5</restassured.version>
@@ -84,6 +84,14 @@
                     </execution>
                 </executions>
             </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <source>15</source>
+              <target>15</target>
+            </configuration>
+          </plugin>
         </plugins>
     </build>
     <dependencies>

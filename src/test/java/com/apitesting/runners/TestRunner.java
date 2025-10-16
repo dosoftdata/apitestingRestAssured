@@ -41,13 +41,17 @@ public class TestRunner extends AbstractTestNGCucumberTests {
   }
 
   @BeforeClass(alwaysRun = true)
-  public void logTagFilter() {
+  public void beforeClass() {
     String tag = System.getProperty("cucumber.filter.tags", "");
     log.info("Running tests with tag: {}", tag != null ? tag : "No tag filter applied");
   }
+  @AfterClass(alwaysRun = true)
+  public void afterClass() {
+  // ScenarioContext.clear();
+  }
 
   @AfterSuite(alwaysRun = true)
-  public void afterAll() {
+  public void afterSuite() {
     if((boolean) ScenarioContext.get("wiremock")){
       WireMockFactory.stopServer();
       ScenarioContext.clear();

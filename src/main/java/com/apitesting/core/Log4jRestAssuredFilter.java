@@ -5,9 +5,10 @@ import io.restassured.filter.FilterContext;
 import io.restassured.response.Response;
 import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.FilterableResponseSpecification;
+import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.util.Supplier;
+import org.apache.logging.log4j.message.Message;
 
 public class Log4jRestAssuredFilter implements Filter {
 
@@ -20,11 +21,11 @@ public class Log4jRestAssuredFilter implements Filter {
 
     logger.info("Request: {}()", requestSpec.getURI());
     logger.info("Headers: {}", requestSpec.getHeaders());
-    logger.info("Body: {}", (Supplier<?>) requestSpec.getBody());
+    logger.info("Body: {}", requestSpec.<Message>getBody());
 
     Response response = context.next(requestSpec, responseSpec);
 
-    logger.info("Response Status Code: {}", response.getStatusCode());
+    logger.info("Response Status Code: {}", Optional.of(response.getStatusCode()));
     logger.info("Response Headers: {}", response.getHeaders());
     logger.info("Response Body: {}", response.getBody().asPrettyString());
 

@@ -59,6 +59,7 @@ public class commonSteps extends DslHelper {
         this.context.getApi().setResponse(
                 this.context.getRes().spec(this.context.getSpec().build())
                 .when().request(method));
+       // context.getApi().getResponse().getHeader("");
 
     }
 
