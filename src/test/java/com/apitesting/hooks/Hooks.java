@@ -2,10 +2,12 @@ package com.apitesting.hooks;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import io.cucumber.java.*;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import com.apitesting.config.ConfigLoader;
 import com.apitesting.core.*;
 import com.apitesting.dsl.ScenarioContext;
+import plugins.externalTestData.DynamicDataPreProcessor;
 
 @Slf4j
 public class Hooks  {
@@ -13,7 +15,7 @@ public class Hooks  {
     static WireMockServer wireMockServer;
     private static boolean beforeAllisInitialized = false;
     private static boolean afterAllisInitialized = false;
-
+  @SneakyThrows
   @BeforeAll
     public static void beforeAll() {
       if (!beforeAllisInitialized) {
@@ -29,6 +31,7 @@ public class Hooks  {
     @Before(order = 0)
     public void loadConfig() {
         ConfigLoader.loadConfig();
+        log.info(ScenarioContext.getAll().toString());
         customSpec.reset(); // resets to a fresh spec
     }
     @After(order = 0)
