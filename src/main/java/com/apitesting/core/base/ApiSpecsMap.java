@@ -1,5 +1,6 @@
-package com.apitesting.core;
+package com.apitesting.core.base;
 
+import com.apitesting.core.filters.RequestDelayFilter;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.HttpClientConfig;
 import io.restassured.config.RestAssuredConfig;
@@ -11,9 +12,6 @@ import lombok.Data;
 import org.apache.http.client.CookieStore;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.apache.http.client.params.ClientPNames.COOKIE_POLICY;
 import static org.apache.http.client.params.CookiePolicy.BROWSER_COMPATIBILITY;
@@ -33,6 +31,5 @@ public class ApiSpecsMap {
                         return httpClient;
                     })
                     .setParam(COOKIE_POLICY, BROWSER_COMPATIBILITY)));
-    private static final Map<String, RequestSpecification> specMap = new HashMap<>();
     private ApiSpecsMap (){}
 }

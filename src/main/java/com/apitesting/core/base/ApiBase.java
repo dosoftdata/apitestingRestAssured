@@ -1,4 +1,4 @@
-package com.apitesting.core;
+package com.apitesting.core.base;
 
 import io.restassured.parsing.Parser;
 import io.restassured.response.Response;

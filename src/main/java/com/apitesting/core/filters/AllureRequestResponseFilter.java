@@ -1,4 +1,4 @@
-package com.apitesting.core;
+package com.apitesting.core.filters;
 
 import io.qameta.allure.Allure;
 import io.restassured.filter.Filter;

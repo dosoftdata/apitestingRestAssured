@@ -1,4 +1,4 @@
-package com.apitesting.core;
+package com.apitesting.core.helpers;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;

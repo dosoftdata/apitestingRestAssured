@@ -1,6 +1,6 @@
 package plugins.externalTestData;
 
-import com.apitesting.core.DBManager;
+import com.apitesting.core.helpers.DBManager;
 
 import io.cucumber.plugin.ConcurrentEventListener;
 import io.cucumber.plugin.event.EventPublisher;

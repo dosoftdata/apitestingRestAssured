@@ -1,4 +1,4 @@
-package com.apitesting.core;
+package com.apitesting.core.helpers;
 /**
  * DBManager
  * Singleton manager for a single JDBC connection shared across all scenarios.

@@ -1,4 +1,4 @@
-package com.apitesting.core;
+package com.apitesting.core.filters;
 
 import io.restassured.filter.Filter;
 import io.restassured.filter.FilterContext;

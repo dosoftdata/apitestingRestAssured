@@ -2,7 +2,7 @@ package com.apitesting.dsl.actions;
 
 import io.cucumber.java.en.*;
 import lombok.SneakyThrows;
-import com.apitesting.core.RequestDelayFilter;
+import com.apitesting.core.filters.RequestDelayFilter;
 import com.apitesting.dsl.*;
 
 import java.io.File;

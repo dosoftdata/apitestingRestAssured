@@ -1,7 +1,7 @@
 package com.apitesting.dsl;
 
-import com.apitesting.core.AllureRequestResponseFilter;
-import com.apitesting.core.Log4jRestAssuredFilter;
+import com.apitesting.core.filters.AllureRequestResponseFilter;
+import com.apitesting.core.filters.Log4jRestAssuredFilter;
 import io.restassured.http.Headers;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,8 +9,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import io.restassured.specification.RequestSpecification;
 import lombok.*;
-import com.apitesting.core.ApiBase;
-import com.apitesting.core.CustomRequestSpec;
+import com.apitesting.core.base.ApiBase;
+import com.apitesting.core.base.CustomRequestSpec;
 
 import static io.restassured.RestAssured.given;
 

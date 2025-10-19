@@ -1,4 +1,4 @@
-package com.apitesting.core;
+package com.apitesting.core.base;
 
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
