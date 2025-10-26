@@ -8,10 +8,11 @@
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>22</java.version>
+        <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <surefire.plugin.version>3.5.3</surefire.plugin.version>
+        <failsafe.plugin.version>3.1.2</failsafe.plugin.version>
+        <jacoco.plugin.version>0.8.10</jacoco.plugin.version>
         <restassured.version>5.5.6</restassured.version>
         <cucumber.version>7.30.0</cucumber.version>
         <testng.version>7.8.0</testng.version>
@@ -27,8 +28,25 @@
     </properties>
     <build>
         <plugins>
-            <!-- Allure Report Plugin -->
-            <plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${failsafe.plugin.version}</version>
+            <configuration>
+              <skipTests>true</skipTests>
+            </configuration>
+          </plugin>
+          <!-- Maven Compile Plugin -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <source>${java.version}</source>
+              <target>${java.version}</target>
+            </configuration>
+          </plugin>
+          <!-- Allure Report Plugin -->
+          <plugin>
                 <groupId>io.qameta.allure</groupId>
                 <artifactId>allure-maven</artifactId>
                 <version>${allure.maven.plugin.version}</version>
@@ -52,7 +70,59 @@
                 </execution>
               </executions>
             </plugin>
-            <plugin>
+          <!-- JaCoCo -->
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco.plugin.version}</version>
+            <executions>
+              <execution>
+                <id>prepare-agent</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+                <configuration>
+                  <excludes>
+                    <!-- Exclude all third-party libraries -->
+                    <exclude>io/restassured/**</exclude>
+                    <exclude>org/apache/**</exclude>
+                    <exclude>com/google/**</exclude>
+                  </excludes>
+                </configuration>
+              </execution>
+              <execution>
+                <id>report</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- Failsafe for integration tests -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>${failsafe.plugin.version}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <includes>
+                <include>**/TestRunner*.java</include>
+              </includes>
+              <systemPropertyVariables>
+                <env>${env}</env>
+                <allure.results.directory>${project.basedir}/reports</allure.results.directory>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+            <!--plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.plugin.version}</version>
@@ -66,7 +136,7 @@
                       <allure.results.directory>${project.basedir}/reports</allure.results.directory>
                     </systemPropertyVariables>
                 </configuration>
-            </plugin>
+            </plugin-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -84,14 +154,6 @@
                     </execution>
                 </executions>
             </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-              <source>${java.version}</source>
-              <target>${java.version}</target>
-            </configuration>
-          </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -193,16 +255,7 @@
             <artifactId>nashorn-core</artifactId>
             <version>15.4</version>
         </dependency>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20250517</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.10.1</version>
-        </dependency>
+
       <!-- JSONAssert -->
       <dependency>
         <groupId>org.skyscreamer</groupId>
@@ -236,31 +289,6 @@
             <version>4.1</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.17</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>3.17</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml-schemas -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml-schemas</artifactId>
-            <version>3.17</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans -->
-        <dependency>
-            <groupId>org.apache.xmlbeans</groupId>
-            <artifactId>xmlbeans</artifactId>
-            <version>2.6.0</version>
-        </dependency>
-        <!-- -->
         <!-- MySQL JDBC Driver -->
         <dependency>
             <groupId>mysql</groupId>
@@ -290,7 +318,11 @@
         <artifactId>poi-ooxml</artifactId>
         <version>5.2.5</version>
       </dependency>
-
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi-ooxml-schemas</artifactId>
+        <version>4.1.2</version>
+      </dependency>
       <!-- optional: for date/cell formatting utilities -->
       <dependency>
         <groupId>org.apache.poi</groupId>
