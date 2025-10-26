@@ -21,16 +21,17 @@ import org.testng.annotations.*;
     glue = {
         "com.apitesting.dsl.actions",
         "com.apitesting.hooks"
-    },
-    tags = "@regression"
+    }
 )
 public class TestRunner extends AbstractTestNGCucumberTests {
+
   private static WireMockServer wireMockServer;
   @Override
   @DataProvider(parallel = false)
   public Object[][] scenarios() {
     return super.scenarios();
   }
+
 
   @BeforeSuite(alwaysRun = true)
   public void beforeSuite() {
@@ -43,7 +44,7 @@ public class TestRunner extends AbstractTestNGCucumberTests {
   @BeforeClass(alwaysRun = true)
   public void beforeClass() {
     String tag = System.getProperty("cucumber.filter.tags", "");
-    log.info("Running tests with tag: {}", tag != null ? tag : "No tag filter applied");
+    log.info("Running tests with tag: {}", !tag.isEmpty() ? tag : "No tag filter applied");
   }
   @AfterClass(alwaysRun = true)
   public void afterClass() {
@@ -56,6 +57,7 @@ public class TestRunner extends AbstractTestNGCucumberTests {
       WireMockFactory.stopServer();
       ScenarioContext.clear();
       log.info("WireMock server stopped.");
+     // ObjectFactoryManager.getSupplier().get().stop();
     }
   }
 }

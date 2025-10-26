@@ -41,10 +41,10 @@ Feature: Book API Test
     And request
       """
       {
-        "title": "Lorem lorem",
-        "description": "Lorem lorem lorem.",
-        "excerpt": "Lorem lorem lorem.",
-        "publishDate": "2025-10-10T11:18:33.2663956+00:00"
+        "title": "#(faker.lorem.word)",
+        "description": "#(faker.lorem.paragraph)",
+        "excerpt": "#(faker.lorem.sentence)",
+        "publishDate":  "#(timestamp)"
       }
       """
     And method POST
@@ -71,16 +71,16 @@ Feature: Book API Test
     And request
       """
       {
-        "title": "Lorem lorem",
-        "description": "Lorem lorem lorem.",
-        "excerpt": "Lorem lorem lorem.",
-        "publishDate": "2025-10-10T11:18:33.2663956+00:00"
+        "title": "#(faker.lorem.word)",
+        "description": "#(faker.lorem.paragraph)",
+        "excerpt": "#(faker.lorem.sentence)",
+        "publishDate":  "#(timestamp)"
       }
       """
     And method PUT
     Then status 200
-    And match path $.title should be = Lorem lorem
-    And match path $.description should be = Lorem lorem lorem.
+    And match path $.title should be = #(faker.lorem.word)
+    And match path $.description should be = #(faker.lorem.paragraph)
 
   @happy
   Scenario: Delete a book by its ID
@@ -91,6 +91,7 @@ Feature: Book API Test
     And match
       """
       """
+
   @edge
   Scenario: Get book with invalid ID
     When path <basepath>/{id}
@@ -113,7 +114,7 @@ Feature: Book API Test
     And request
       """
       {
-        "description": "Lorem lorem lorem."
+        "description": "#(faker.lorem.paragraph)"
       }
       """
     And method POST
@@ -126,10 +127,10 @@ Feature: Book API Test
     And request
       """
       {
-        "title": "Lorem lorem",
-        "description": "Lorem lorem lorem."
-        "excerpt": "Lorem lorem lorem."
-        "publishDate": "2025-10-10T11:18:33.2663956+00:00"
+        "title": "#(faker.lorem.word)",
+        "description": "#(faker.lorem.paragraph)"
+        "excerpt": "#(faker.lorem.sentence)",
+        "publishDate":  "#(timestamp)"
       }
       """
     And method POST

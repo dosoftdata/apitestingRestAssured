@@ -3,7 +3,7 @@ TC001,Add item to inventory,ITEM-0012,502,,,,,
 TC001,Add item to inventory,ITEM-002,102,,,,,
 TC001,Remove item from inventory,ITEM-0012,502,,,,,
 TC001,Remove item from inventory,ITEM-002,102,,,,,
-TC002,Create multiple orders,,,,alice,Widget,,
-TC002,Create multiple orders,,,,bob,Gadget,,
+TC002,Create multiple orders,2,1,3,alice,Widget,4,
+TC002,Create multiple orders,2,1,3,bob,Gadget,4,
 Payment Management - Excel Test Data,Pay invoice,,,,charlie,,INV-123,150.00
 Payment Management - Excel Test Data,Pay invoice,,,,dave,,INV-456,200.00

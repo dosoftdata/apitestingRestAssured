@@ -5,18 +5,25 @@ import com.apitesting.core.base.CustomRequestSpec;
 import com.apitesting.core.helpers.WireMockFactory;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import io.cucumber.java.*;
+import java.util.UUID;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import com.apitesting.config.ConfigLoader;
 import com.apitesting.dsl.ScenarioContext;
-
+//import plugins.externalTestData.PreprocessingFeatureSupplier;
+//import com.qmetry.qaf.automation.cucumber.QAFCucumberPlugin;
+//import static com.qmetry.qaf.automation.core.ConfigurationManager.getBundle;
 @Slf4j
 public class Hooks  {
+  static {
+
+    log.info(Hooks.class.toString());
+  }
     private CustomRequestSpec customSpec =  new CustomRequestSpec(ApiSpecsMap.requestSpec);
     static WireMockServer wireMockServer;
     private static boolean beforeAllisInitialized = false;
     private static boolean afterAllisInitialized = false;
-  @SneakyThrows
+
   @BeforeAll
     public static void beforeAll() {
       if (!beforeAllisInitialized) {
@@ -32,7 +39,7 @@ public class Hooks  {
     @Before(order = 0)
     public void loadConfig() {
         ConfigLoader.loadConfig();
-        log.info(ScenarioContext.getAll().toString());
+        log.info(String.valueOf(ScenarioContext.getAll()));
         customSpec.reset(); // resets to a fresh spec
     }
     @After(order = 0)

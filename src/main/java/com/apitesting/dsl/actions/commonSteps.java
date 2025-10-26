@@ -1,6 +1,9 @@
 package com.apitesting.dsl.actions;
 
+//import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.*;
+//import io.restassured.response.ValidatableResponse;
+import io.restassured.response.ValidatableResponse;
 import lombok.SneakyThrows;
 import com.apitesting.core.filters.RequestDelayFilter;
 import com.apitesting.dsl.*;
@@ -8,6 +11,7 @@ import com.apitesting.dsl.*;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
+import org.hamcrest.Matcher;
 
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -50,7 +54,7 @@ public class commonSteps extends DslHelper {
     public void header(String name, String value) {
         this.context.getSpec().setHeader(name, ScenarioContext.resolve(value));
     }
-    @SneakyThrows
+
     @When("^method (GET|POST|PUT|PATCH|DELETE)(?: \"([^\"]+)\")?$")
     public void method(String method, String path) {
         if (path != null) {
@@ -139,7 +143,7 @@ public class commonSteps extends DslHelper {
 
   @Then("^match path (.+) should be (.+)$")
   public void matchPath(String path, String expr) {
-    JsonMatcherResult result = JsonMatcher.matchJson(this.context.getApi().getResponse().asString(), path + " " + expr);
+    JsonMatcherResult result = JsonMatcher.matchJson(this.context.getApi().getResponse().asString(), path + " " + ScenarioContext.resolve(expr));
     assertTrue(result.isSuccess(), result.getMessage());
   }
 
@@ -148,5 +152,14 @@ public class commonSteps extends DslHelper {
     JsonMatcherResult result = JsonMatcher.matchEach(this.context.getApi().getResponse().asString(), arrayPath, ScenarioContext.resolve(expected));
     assertTrue(result.isSuccess(), result.getMessage());
   }
+
+  @Then("^match response body path (.+) should be (.+) (.+)$")
+  public void match_response_body_path(String path, String matcherName, String expected) {
+    ValidatableResponse response = context.getApi().getResponse().then();
+    Matcher<?> matcher = buildMatcher(matcherName, expected);
+
+    response.body(path, matcher);
+  }
+
 
 }
