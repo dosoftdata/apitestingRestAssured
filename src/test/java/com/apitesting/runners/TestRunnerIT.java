@@ -23,7 +23,7 @@ import org.testng.annotations.*;
         "com.apitesting.hooks"
     }
 )
-public class TestRunner extends AbstractTestNGCucumberTests {
+public class TestRunnerIT extends AbstractTestNGCucumberTests {
 
   private static WireMockServer wireMockServer;
   @Override
