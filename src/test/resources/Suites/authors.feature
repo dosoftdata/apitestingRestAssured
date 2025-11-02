@@ -13,7 +13,7 @@ Feature: Author API Test
     When path <basepath>
     And method GET
     Then status 200
-    * def id in response.[0].id
+    * def id in response.[1].id
     And match each $.[*] should match
     """
     {
@@ -26,6 +26,17 @@ Feature: Author API Test
   Scenario: Retrieve details of a specific author by their ID
     When path <basepath>/{id}
     And pathParam id = <id>
+#    And retry until equal
+#      """
+#        {
+#          "bodyPath": "id",
+#          "hasValue": 2,
+#          "minutes": 1,
+#          "seconds" : 15,
+#          "pollMillis":5000,
+#          "status": 2001
+#        }
+#      """
     And method GET
     Then status 200
     And match

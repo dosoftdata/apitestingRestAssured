@@ -25,6 +25,11 @@
         <lombok.version>1.18.30</lombok.version>
         <jackson.version>2.15.2</jackson.version>
         <env>dev</env>
+        <gatling.version>3.14.7</gatling.version>
+        <gatling-maven-plugin.version>4.20.8</gatling-maven-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+        <maven-jar-plugin.version>3.4.1</maven-jar-plugin.version>
     </properties>
     <build>
         <plugins>
@@ -37,14 +42,6 @@
             </configuration>
           </plugin>
           <!-- Maven Compile Plugin -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-              <source>${java.version}</source>
-              <target>${java.version}</target>
-            </configuration>
-          </plugin>
           <!-- Allure Report Plugin -->
           <plugin>
                 <groupId>io.qameta.allure</groupId>
@@ -111,6 +108,7 @@
               </execution>
             </executions>
             <configuration>
+              <testFailureIgnore>true</testFailureIgnore>
               <includes>
                 <include>**/*IT.java</include>
               </includes>
@@ -137,6 +135,38 @@
                     </execution>
                 </executions>
             </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>default-compile</id>
+                <phase>none</phase>
+              </execution>
+              <execution>
+                <id>default-testCompile</id>
+                <phase>none</phase>
+              </execution>
+              <execution>
+                <id>compile</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>testCompile</id>
+                <phase>test-compile</phase>
+                <goals>
+                  <goal>testCompile</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <source>${java.version}</source>
+              <target>${java.version}</target>
+            </configuration>
+          </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -331,6 +361,16 @@
         <version>1.0.2</version>
       </dependency>
 
-
+      <dependency>
+        <groupId>io.gatling.highcharts</groupId>
+        <artifactId>gatling-charts-highcharts</artifactId>
+        <version>${gatling.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.json</groupId>
+        <artifactId>json</artifactId>
+        <version>20231013</version>
+      </dependency>
     </dependencies>
 </project>

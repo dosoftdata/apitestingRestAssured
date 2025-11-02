@@ -2,7 +2,6 @@ package com.apitesting.dsl;
 
 import com.apitesting.core.filters.AllureRequestResponseFilter;
 import com.apitesting.core.filters.Log4jRestAssuredFilter;
-import io.restassured.http.Headers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -22,16 +21,13 @@ public class ScenarioContext {
   @Setter
   private ApiBase api;
   private RequestSpecification res;
-  private Headers headers;
   CustomRequestSpec spec;
 
   public ScenarioContext() {
     api = new ApiBase();
-
     res = given()
         .filter(new AllureRequestResponseFilter())
         .filter(new Log4jRestAssuredFilter());
-
     spec = new CustomRequestSpec( getApi().getRequestSpec());
   }
   public static void set(String key, Object value) {

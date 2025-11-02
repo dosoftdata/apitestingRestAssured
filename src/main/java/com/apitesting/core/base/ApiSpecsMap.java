@@ -1,5 +1,6 @@
 package com.apitesting.core.base;
 
+import com.apitesting.core.filters.DedupeRequestFilter;
 import com.apitesting.core.filters.RequestDelayFilter;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.HttpClientConfig;
@@ -17,10 +18,12 @@ import static org.apache.http.client.params.ClientPNames.COOKIE_POLICY;
 import static org.apache.http.client.params.CookiePolicy.BROWSER_COMPATIBILITY;
 
 @Data
+@SuppressWarnings("deprecation")
 public class ApiSpecsMap {
     private static final CookieStore cookieStoreGBL = new BasicCookieStore();
     public static RequestSpecification requestSpec = new RequestSpecBuilder()
             .addFilter(new RequestDelayFilter(2000))
+            .addFilter(new DedupeRequestFilter())
             .addFilter(new RequestLoggingFilter(LogDetail.ALL))
             .addFilter(new ResponseLoggingFilter(LogDetail.ALL)).build()
             .config(RestAssuredConfig.newConfig()

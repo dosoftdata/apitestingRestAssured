@@ -1,6 +1,7 @@
 package com.apitesting.dsl.actions;
 
 //import io.cucumber.java.ParameterType;
+import com.apitesting.core.filters.RetryFilter;
 import io.cucumber.java.en.*;
 //import io.restassured.response.ValidatableResponse;
 import io.restassured.response.ValidatableResponse;
@@ -11,6 +12,8 @@ import java.io.File;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.Matcher;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -62,8 +65,6 @@ public class commonSteps extends DslHelper {
         this.context.getApi().setResponse(
                 this.context.getRes().spec(this.context.getSpec().build())
                 .when().request(method));
-       // context.getApi().getResponse().getHeader("");
-
     }
 
     @When("^form field ([^\\s]+) = (.+)")
@@ -95,6 +96,10 @@ public class commonSteps extends DslHelper {
     public void status(int status) {
        context.getApi().getResponse().then().statusCode(status);
     }
+  @When("^status (\\d+) or (\\d+)")
+  public void statusOr(int status, int or) {
+    context.getApi().getResponse().then().statusCode(anyOf(is(status), is( or)));
+  }
     @When("^assert (.+) = (.+)")
     public void assertEqual(String s1,String expression) {
           assertThat(s1, is(ScenarioContext.resolve(expression)));
@@ -156,9 +161,74 @@ public class commonSteps extends DslHelper {
   public void match_response_body_path(String path, String matcherName, String expected) {
     ValidatableResponse response = context.getApi().getResponse().then();
     Matcher<?> matcher = buildMatcher(matcherName, expected);
-
     response.body(path, matcher);
   }
 
+  @And("wait until JSON path {string} equals {string} with timeout {int} minutes {int} seconds polling {int} ms and status {int}")
+  public void WaitUntilJsonPathEquals(
+      String jsonPath,
+      String expected,
+      int minutes,
+      int seconds,
+      int pollMillis,
+      int expectedStatus
+  ) {
+    String rawValue = expected;
+    Object expectedValue;
+    // Try to parse integer
+    try {
+      expectedValue = Integer.parseInt(rawValue);
+    } catch (NumberFormatException e1) {
+      // Try boolean
+      if ("true".equalsIgnoreCase(rawValue)) {
+        expectedValue = true;
+      } else if ("false".equalsIgnoreCase(rawValue)) {
+        expectedValue = false;
+      } else {
+        // Default: treat as string
+        expectedValue = rawValue;
+      }
+    }
+    RetryFilter filterRetry = RetryFilter.jsonPathEquals(
+        minutes,
+        seconds,
+        pollMillis,
+        expectedStatus,
+        jsonPath,
+        expectedValue
+    );
 
+    context.getSpec().filter(filterRetry);
+
+  }
+  @And("^retry until equal$")
+  public void retryUntil(String docString) throws JSONException {
+    // Parse docString as JSON
+    JSONObject json = new JSONObject(docString);
+
+    String bodyPath = json.optString("bodyPath", "$"); // default JSONPath
+    Object hasValue = json.has("hasValue") ? json.get("hasValue") : null;
+    int minutes = json.optInt("minutes", 0);
+    int seconds = json.optInt("seconds", 30);
+    int status = json.optInt("status", 200);
+    int pollMillis = json.optInt("pollMillis", 500); // optional, default 500ms
+
+    // If hasValue is empty string, treat as null
+    if (hasValue instanceof String && ((String) hasValue).isEmpty()) {
+      hasValue = null;
+    }
+
+    RetryFilter filter;
+
+    if (hasValue != null) {
+      // Use JSONPath + expected value
+      filter = RetryFilter.jsonPathEquals(minutes, seconds, pollMillis, status, bodyPath, hasValue);
+    } else {
+      // Only check status
+      filter = new RetryFilter(minutes, seconds, pollMillis, status);
+    }
+    // Attach filter to RestAssured request
+    context.getSpec().filter(filter);
+
+  }
 }
