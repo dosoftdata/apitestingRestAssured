@@ -1,19 +1,18 @@
 package com.apitesting.dsl.actions;
 
-//import io.cucumber.java.ParameterType;
-import com.apitesting.core.filters.RetryFilter;
+import com.apitesting.core.base.CustomRequestSpec;
 import io.cucumber.java.en.*;
-//import io.restassured.response.ValidatableResponse;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import com.apitesting.core.filters.RequestDelayFilter;
 import com.apitesting.dsl.*;
-
 import java.io.File;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.Matcher;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -113,22 +112,53 @@ public class commonSteps extends DslHelper {
     public void redirectCircular(Integer b) {
         this.context.getSpec().setRedirectCircular(Boolean.valueOf(String.valueOf(b)));
     }
-    @When("^retry (GET|POST|PUT|PATCH|DELETE)(?: \"([^\"]+)\")? until (.+) in response.(.*)$")
-    public void retry(String method, String path, String until, String body) {
-        if (path != null) {
-            this.context.getSpec().setBasePath(ScenarioContext.resolve(path));
-        }
-              await()
-               .atMost(60, TimeUnit.SECONDS)         // Total time to wait
-                .pollInterval(5, TimeUnit.SECONDS)    // Custom poll interval
-                .pollDelay(2, TimeUnit.SECONDS)       // Optional initial delay
-                .until(() -> {
-                    this.context.getApi().setResponse(
-                            this.context.getRes().spec(this.context.getSpec().build())
-                                    .when().request(method));
-                    return this.context.getApi().getResponse().path(body).toString().equalsIgnoreCase(until);
-                });
+    @When("^retry (GET|POST|PUT|PATCH|DELETE)\\s+([^\\s]+)? until condition$")
+    public void retry(String method, String path, String conditionJson) throws JSONException {
+      // Resolve path
+      if (path != null) {
+        path = ScenarioContext.resolve(path);
+      }
+      JsonPath json = new JsonPath(conditionJson);
+      Object expected = json.get("hasValue"); // can be String, Number, Boolean, null
+      String bodyPath = json.getString("bodyPath");
+      String action   = json.getString("action") != null ? json.getString("action") : "equal";
 
+      Integer minutes        = json.get("minutes")       != null ? json.getInt("minutes") : 1;
+      Integer seconds        = json.get("seconds")       != null ? json.getInt("seconds") : 30;
+      Integer pollMillis     = json.get("pollMillis")    != null ? json.getInt("pollMillis") : 2000;
+      Integer expectedStatus = json.get("status")        != null ? json.getInt("status") : 200;
+
+      CustomRequestSpec originalSpec = this.context.getSpec();
+      AtomicReference<Response> lastResp = new AtomicReference<>();
+
+      String finalPath = path;
+      await()
+          .atMost(Duration.ofMinutes(minutes).plusSeconds(seconds))
+          .pollInterval(Duration.ofMillis(pollMillis))
+          .ignoreExceptions()
+          .until(() -> {
+            Response resp = context.getRes()
+                .spec(originalSpec.build())
+                .when().request(method, finalPath);
+
+            lastResp.set(resp);
+
+            boolean statusOk = resp.statusCode() == expectedStatus;
+
+            Object value = null;
+            if (bodyPath != null) {
+              try { value = resp.path(bodyPath); } catch (Exception ignored) {}
+            }
+
+            boolean bodyOk = (bodyPath == null) || evaluateCondition(action, value, expected);
+
+            log.info("[Retry] {} {} | status={} | {}={} | passed={}",
+                method, finalPath, resp.statusCode(), bodyPath, value, statusOk && bodyOk);
+
+            return statusOk && bodyOk;
+          });
+
+      this.context.getApi().setResponse(lastResp.get());
     }
 
   @When("^multipart file (.+) path (.+) mimeType (.+)")
@@ -162,73 +192,5 @@ public class commonSteps extends DslHelper {
     ValidatableResponse response = context.getApi().getResponse().then();
     Matcher<?> matcher = buildMatcher(matcherName, expected);
     response.body(path, matcher);
-  }
-
-  @And("wait until JSON path {string} equals {string} with timeout {int} minutes {int} seconds polling {int} ms and status {int}")
-  public void WaitUntilJsonPathEquals(
-      String jsonPath,
-      String expected,
-      int minutes,
-      int seconds,
-      int pollMillis,
-      int expectedStatus
-  ) {
-    String rawValue = expected;
-    Object expectedValue;
-    // Try to parse integer
-    try {
-      expectedValue = Integer.parseInt(rawValue);
-    } catch (NumberFormatException e1) {
-      // Try boolean
-      if ("true".equalsIgnoreCase(rawValue)) {
-        expectedValue = true;
-      } else if ("false".equalsIgnoreCase(rawValue)) {
-        expectedValue = false;
-      } else {
-        // Default: treat as string
-        expectedValue = rawValue;
-      }
-    }
-    RetryFilter filterRetry = RetryFilter.jsonPathEquals(
-        minutes,
-        seconds,
-        pollMillis,
-        expectedStatus,
-        jsonPath,
-        expectedValue
-    );
-
-    context.getSpec().filter(filterRetry);
-
-  }
-  @And("^retry until equal$")
-  public void retryUntil(String docString) throws JSONException {
-    // Parse docString as JSON
-    JSONObject json = new JSONObject(docString);
-
-    String bodyPath = json.optString("bodyPath", "$"); // default JSONPath
-    Object hasValue = json.has("hasValue") ? json.get("hasValue") : null;
-    int minutes = json.optInt("minutes", 0);
-    int seconds = json.optInt("seconds", 30);
-    int status = json.optInt("status", 200);
-    int pollMillis = json.optInt("pollMillis", 500); // optional, default 500ms
-
-    // If hasValue is empty string, treat as null
-    if (hasValue instanceof String && ((String) hasValue).isEmpty()) {
-      hasValue = null;
-    }
-
-    RetryFilter filter;
-
-    if (hasValue != null) {
-      // Use JSONPath + expected value
-      filter = RetryFilter.jsonPathEquals(minutes, seconds, pollMillis, status, bodyPath, hasValue);
-    } else {
-      // Only check status
-      filter = new RetryFilter(minutes, seconds, pollMillis, status);
-    }
-    // Attach filter to RestAssured request
-    context.getSpec().filter(filter);
-
   }
 }

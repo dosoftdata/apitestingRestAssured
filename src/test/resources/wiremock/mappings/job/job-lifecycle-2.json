@@ -1,0 +1,11 @@
+{
+  "scenarioName": "job-123",
+  "requiredScenarioState": "PENDING",
+  "newScenarioState": "RUNNING",
+  "request": { "method": "GET", "url": "/api/job/123" },
+  "response": {
+    "status": 202,
+    "bodyFileName": "job/123-running.json",
+    "headers": { "Content-Type": "application/json" }
+  }
+}

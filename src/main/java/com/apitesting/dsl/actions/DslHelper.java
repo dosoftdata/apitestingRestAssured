@@ -6,7 +6,9 @@ import io.cucumber.datatable.DataTable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.hamcrest.Matcher;
 import static org.hamcrest.Matchers.*;
 /**
@@ -166,5 +168,36 @@ public abstract class DslHelper {
 
     return Collections.emptyMap();
   }
+  protected boolean evaluateCondition(String action, Object actualValue, Object expected) {
+    switch (action.toLowerCase()) {
+      case "equal":
+        return Objects.equals(
+            String.valueOf(actualValue),
+            String.valueOf(expected)
+        );
+
+      case "exists":
+        return actualValue != null;
+
+      case "contains":
+        return actualValue != null && actualValue.toString().contains(String.valueOf(expected));
+
+      case "greater":
+        if (actualValue instanceof Number && expected instanceof Number) {
+          return ((Number) actualValue).doubleValue() > ((Number) expected).doubleValue();
+        }
+        return false;
+
+      case "listcontains":
+        return actualValue instanceof List<?> list && list.contains(expected);
+
+      case "any":
+        return true;
+
+      default:
+        throw new IllegalArgumentException("Unknown action: " + action);
+    }
+  }
+
 
 }

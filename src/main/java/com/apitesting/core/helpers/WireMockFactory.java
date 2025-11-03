@@ -1,7 +1,11 @@
 package com.apitesting.core.helpers;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.resetAllScenarios;
+
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 
 public class WireMockFactory {
     private static WireMockServer wireMockServer;
@@ -13,10 +17,12 @@ public class WireMockFactory {
                     .options()
                     .dynamicPort()
                     .usingFilesUnderDirectory("src/test/resources/wiremock")
-                    .extensions(new com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer(true))
+                    .extensions(new ResponseTemplateTransformer(true))
 
             );
             wireMockServer.start();
+            WireMock.configureFor("localhost", wireMockServer.port());
+            WireMock.resetAllScenarios();
         }
         return wireMockServer;
     }

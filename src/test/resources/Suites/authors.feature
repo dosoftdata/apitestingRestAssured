@@ -24,20 +24,15 @@ Feature: Author API Test
     """
   @happy
   Scenario: Retrieve details of a specific author by their ID
-    When path <basepath>/{id}
-    And pathParam id = <id>
-#    And retry until equal
-#      """
-#        {
-#          "bodyPath": "id",
-#          "hasValue": 2,
-#          "minutes": 1,
-#          "seconds" : 15,
-#          "pollMillis":5000,
-#          "status": 2001
-#        }
-#      """
-    And method GET
+    And retry GET #(basepath)/#(id) until condition
+      """
+        {
+          "action": "equal",
+          "bodyPath": "id",
+          "hasValue": 2,
+          "status": 2001
+        }
+      """
     Then status 200
     And match
     """

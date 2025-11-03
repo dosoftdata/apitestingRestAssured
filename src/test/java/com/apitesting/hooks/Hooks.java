@@ -1,5 +1,7 @@
 package com.apitesting.hooks;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.resetAllScenarios;
+
 import com.apitesting.core.base.ApiSpecsMap;
 import com.apitesting.core.base.CustomRequestSpec;
 import com.apitesting.core.helpers.WireMockFactory;
@@ -28,6 +30,7 @@ public class Hooks  {
         log.info("===== starting scenario ====");
           wireMockServer = WireMockFactory.getServer();
           if (wireMockServer.isRunning()) {
+           // resetAllScenarios();
             ScenarioContext.set("mockServerUrl", wireMockServer.baseUrl());
             ScenarioContext.set("mockServer", wireMockServer);
           }
@@ -39,6 +42,7 @@ public class Hooks  {
         ConfigLoader.loadConfig();
         log.info(String.valueOf(ScenarioContext.getAll()));
         customSpec.reset(); // resets to a fresh spec
+
     }
     @After(order = 0)
     public void after(Scenario scenario) {
@@ -50,7 +54,7 @@ public class Hooks  {
    @AfterAll
     public static void afterAll() {
      if (!afterAllisInitialized) {
-         log.info("=== ".concat((String) ScenarioContext.get("mockServerUrl")));
+       //  log.info("=== ".concat((String) ScenarioContext.get("mockServerUrl")));
          WireMockFactory.stopServer();
        log.info("===== end scenario ====");
        afterAllisInitialized = true;
