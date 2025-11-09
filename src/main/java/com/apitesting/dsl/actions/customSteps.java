@@ -1,21 +1,31 @@
 package com.apitesting.dsl.actions;
 
+import static io.restassured.RestAssured.given;
+
+import com.apitesting.core.base.ApiBase;
+import com.apitesting.core.base.CustomRequestSpec;
 import com.apitesting.dsl.ScenarioContext;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class customSteps extends DslHelper {
+public class customSteps extends DslBase {
 
     public customSteps(ScenarioContext context) {
         super(context);
     }
 
   private Map<String, Object> context = new HashMap<>();
+
+
 
   // ===============================
   // DB Scenarios (Order Management)
@@ -103,6 +113,7 @@ public class customSteps extends DslHelper {
   public void payment_status_should_be(String status) {
     System.out.println("✅ Payment status verified: " + status);
   }
+
 
 
 

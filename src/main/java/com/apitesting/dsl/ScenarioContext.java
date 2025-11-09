@@ -1,9 +1,8 @@
 package com.apitesting.dsl;
 
-import com.apitesting.core.filters.AllureRequestResponseFilter;
-import com.apitesting.core.filters.Log4jRestAssuredFilter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import io.restassured.specification.RequestSpecification;
@@ -25,11 +24,10 @@ public class ScenarioContext {
 
   public ScenarioContext() {
     api = new ApiBase();
-    res = given()
-        .filter(new AllureRequestResponseFilter())
-        .filter(new Log4jRestAssuredFilter());
-    spec = new CustomRequestSpec( getApi().getRequestSpec());
+    spec = ApiBase.spec();
+    res = given();
   }
+
   public static void set(String key, Object value) {
     context.get().put(key, value);
   }

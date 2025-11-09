@@ -1,5 +1,7 @@
 package com.apitesting.core.filters;
 
+import com.apitesting.dsl.ScenarioContext;
+import io.restassured.RestAssured;
 import io.restassured.filter.Filter;
 import io.restassured.filter.FilterContext;
 import io.restassured.http.Header;
@@ -17,14 +19,13 @@ public class DedupeRequestFilter implements Filter {
   public Response filter(FilterableRequestSpecification req,
       FilterableResponseSpecification res,
       FilterContext ctx) {
-
             dedupeHeaders(req);
             dedupeQueryParams(req);
             dedupeFormParams(req);
             dedupePathParams(req);
             dedupeCookies(req);
             dedupeMultiparts(req);
-
+    RestAssured.reset();
     return ctx.next(req, res);
   }
 

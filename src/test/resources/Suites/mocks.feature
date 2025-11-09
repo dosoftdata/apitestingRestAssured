@@ -5,14 +5,15 @@ Feature: Mock API Test
     * def basepath = /api/payments
     And header Content-Type = application/json
 
-  @happy
-  Scenario: Get payment
-    When path <basepath>/1234567890000
-    And method GET
-    Then status 200
+#  @happy
+#  Scenario: Get payment
+
 
   @happy
   Scenario: Hello
+    When path <basepath>/1234567890000
+    And method GET
+    Then status 200
     When path /api/greet
     And method GET
     Then status 200

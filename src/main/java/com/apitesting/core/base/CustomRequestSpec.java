@@ -89,6 +89,9 @@ public class CustomRequestSpec {
     public RequestSpecification build() {
         return spec;
     }
+    public RequestSpecification given() {
+      return spec.given();
+    }
 
     // Delegate all RequestSpecification methods to spec
     public RequestSpecification header(String name, Object value) { return spec.header(name, value); }

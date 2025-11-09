@@ -29,8 +29,11 @@ Feature: Author API Test
         {
           "action": "equal",
           "bodyPath": "id",
-          "hasValue": 2,
-          "status": 2001
+          "hasValue": "2",
+          "minutes": 1,
+          "seconds" : 15,
+          "pollMillis":5000,
+          "status": 200
         }
       """
     Then status 200
@@ -67,6 +70,21 @@ Feature: Author API Test
     """
   @happy
   Scenario: Update an existing author’s details
+    When Retrieve a list of all authors
+    When Retrieve a list of all authors
+    When Retrieve a list of all authors
+    When path <basepath>
+    And request
+      """
+      {
+          "id": 0,
+          "idBook": 0,
+          "firstName": "First Name",
+          "lastName": "Last Name"
+      }
+      """
+    And method POST
+    Then status 200
     When path <basepath>/{id}
     And pathParam id = <id>
     And request
@@ -88,6 +106,8 @@ Feature: Author API Test
         "firstName": "#string"
        }
       """
+    When Retrieve a list of all authors
+
   @happy
   Scenario: Delete an author by their ID
     When path <basepath>/{id}

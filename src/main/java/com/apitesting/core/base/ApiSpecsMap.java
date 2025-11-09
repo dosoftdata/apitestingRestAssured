@@ -1,7 +1,10 @@
 package com.apitesting.core.base;
 
+import com.apitesting.core.filters.AllureRequestResponseFilter;
 import com.apitesting.core.filters.DedupeRequestFilter;
+import com.apitesting.core.filters.Log4jRestAssuredFilter;
 import com.apitesting.core.filters.RequestDelayFilter;
+import com.apitesting.core.filters.ResetAfterRequestFilter;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.HttpClientConfig;
 import io.restassured.config.RestAssuredConfig;
@@ -14,9 +17,6 @@ import org.apache.http.client.CookieStore;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import static org.apache.http.client.params.ClientPNames.COOKIE_POLICY;
-import static org.apache.http.client.params.CookiePolicy.BROWSER_COMPATIBILITY;
-
 @Data
 @SuppressWarnings("deprecation")
 public class ApiSpecsMap {
@@ -25,6 +25,10 @@ public class ApiSpecsMap {
             .addFilter(new RequestDelayFilter(2000))
             .addFilter(new DedupeRequestFilter())
             .addFilter(new RequestLoggingFilter(LogDetail.ALL))
+            .addFilter(new AllureRequestResponseFilter())
+            .addFilter(new Log4jRestAssuredFilter())
+            .setUrlEncodingEnabled(true)
+            //.addFilter(new ResetAfterRequestFilter())
             .addFilter(new ResponseLoggingFilter(LogDetail.ALL)).build()
             .config(RestAssuredConfig.newConfig()
                     .httpClient(HttpClientConfig.httpClientConfig()
@@ -33,6 +37,6 @@ public class ApiSpecsMap {
                         httpClient.setCookieStore(cookieStoreGBL);
                         return httpClient;
                     })
-                    .setParam(COOKIE_POLICY, BROWSER_COMPATIBILITY)));
+                    .setParam("http.protocol.cookie-policy", "compatibility")));
     private ApiSpecsMap (){}
 }
