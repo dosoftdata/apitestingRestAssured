@@ -1,6 +1,6 @@
 package com.apitesting.core.base;
 
-import io.restassured.RestAssured;
+import static io.restassured.RestAssured.given;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.filter.Filter;
 import io.restassured.http.ContentType;
@@ -19,11 +19,11 @@ public class CustomRequestSpec {
     private RequestSpecification spec;
 
     public CustomRequestSpec(RequestSpecification baseSpec) {
-        this.spec = RestAssured.given().spec(baseSpec);
+        this.spec = given().spec(baseSpec);
     }
 
     public CustomRequestSpec reset() {
-        this.spec = RestAssured.given();
+        this.spec = given();
         return this;
     }
 
@@ -88,9 +88,6 @@ public class CustomRequestSpec {
 
     public RequestSpecification build() {
         return spec;
-    }
-    public RequestSpecification given() {
-      return spec.given();
     }
 
     // Delegate all RequestSpecification methods to spec

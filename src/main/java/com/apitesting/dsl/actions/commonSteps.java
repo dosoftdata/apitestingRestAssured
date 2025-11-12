@@ -15,13 +15,13 @@ import static org.testng.Assert.assertTrue;
 
 @Slf4j
 public class commonSteps extends DslBase {
-  private final CustomRequestSpec spec = ApiBase.givenDefaultSpec();
     public commonSteps(ScenarioContext context) {
       super(context);
-
     }
   @And("Retrieve a list of all authors")
   public void authorsList(){
+    spec = ApiBase.spec();
+
     spec.baseUri("https://fakerestapi.azurewebsites.net");
     spec.basePath("/api/v1/Authors");
     spec.header("Content-Type"," application/json");
@@ -48,10 +48,10 @@ public class commonSteps extends DslBase {
     public void stepParam(String name, String value) {
           param(name,value);
     }
-  @When("^pathParam ([^\\s]+) = (.+)")
-  public void stepPathParam(String name, String value) {
-    this.context.getSpec().setPathParam(name, ScenarioContext.resolve(value));
-  }
+    @When("^pathParam ([^\\s]+) = (.+)")
+    public void stepPathParam(String name, String value) {
+      this.context.getSpec().setPathParam(name, ScenarioContext.resolve(value));
+    }
     @When("^cookie ([^\\s]+) = (.+)")
     public void stepcookie(String name, String value) {
         this.context.getSpec().setCookie(name, ScenarioContext.resolve(value));

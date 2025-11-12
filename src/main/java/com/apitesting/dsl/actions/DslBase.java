@@ -36,6 +36,7 @@ import static org.testng.Assert.assertTrue;
 public abstract class DslBase {
 
   final ScenarioContext context;
+  protected CustomRequestSpec spec = null;
   protected final ObjectMapper mapper = new ObjectMapper();
 
   public DslBase(ScenarioContext context) {
