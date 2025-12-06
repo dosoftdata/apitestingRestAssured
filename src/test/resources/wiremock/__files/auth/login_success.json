@@ -1,0 +1,4 @@
+{
+  "token": "jwt-{{randomValue length=15 type='ALPHANUMERIC'}}",
+  "expiresIn": 3600
+}

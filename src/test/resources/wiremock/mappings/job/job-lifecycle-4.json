@@ -1,0 +1,11 @@
+{
+  "scenarioName": "job-123",
+  "requiredScenarioState": "DONE",
+  "newScenarioState": "DONE",
+  "request": { "method": "GET", "url": "/api/job/123" },
+  "response": {
+    "status": 404,
+    "bodyFileName": "job/123-done.json",
+    "headers": { "Content-Type": "application/json" }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "scenarioName": "Payment Refund Flow",
+  "requiredScenarioState": "Payment Completed",
+  "newScenarioState": "Refund Issued",
+  "request": {
+    "method": "POST",
+    "url": "/api/payments/refund"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "payments/refund_success.json"
+  }
+}
