@@ -1,0 +1,24 @@
+package com.apitesting.runners;
+
+import io.cucumber.junit.CucumberOptions;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.runner.RunWith;
+import io.cucumber.junit.Cucumber;
+
+@CucumberOptions(
+    plugin = {
+        "pretty",
+        "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm"
+    },
+    features = {"target/parallel/features/[CUCABLE:FEATURE].feature"},
+    glue = {
+         "com.apitesting.dsl.actions",
+         "com.apitesting.hooks"
+    }
+    ,tags = "@regression"
+)
+@RunWith(Cucumber.class)
+@Slf4j
+public class [CUCABLE:RUNNER] {
+  // [CUCABLE:CUSTOM:comment]
+}
